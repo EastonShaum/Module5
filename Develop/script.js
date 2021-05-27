@@ -6,10 +6,10 @@ $("#currentDay").append(today.format("dddd, MMMM Do YYYY"));
 var events = {};
 
 
-//make blocks editable and save into local storage with save button
 
 // task text was clicked
 $(".hours-group").on("click", "p", function() {
+    console.log("click");
     // get current text of p element
     var text = $(this)
       .text()
@@ -23,11 +23,38 @@ $(".hours-group").on("click", "p", function() {
     textInput.trigger("focus");
   });
 
-// blocks in the past are gray
+// editable field was un-focused
+$(".hours-group").on("blur", "textarea", function() {
+  console.log("click off");
+  // get current value of textarea
+  var text = $(this).val();
 
-// current time block is red
+  // get status type and position in the list
+  var status = $(this)
+    .closest(".hours-group")
+    .attr("id")
+    .replace("list-", "");
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
 
-// future time blocks are green
+  // update task in array and re-save to localstorage
+  events[status][index].text = text;
+
+  // recreate p element
+  var eventP = $("<p>")
+    .addClass("m-1")
+    .text(text);
+
+  // replace textarea with new content
+  $(this).replaceWith(eventP);
+});
+
+  // blocks in the past are gray
+
+  // current time block is red
+
+  // future time blocks are green
 
 // var checkEvent = function(eventEl) {
 //     // get check hour from event element
@@ -56,17 +83,44 @@ $(".hours-group").on("click", "p", function() {
     // if nothing in localStorage, create a new object to track all task status arrays
     if (!events) {
       events = {
-        NineAm: ["hello"],
-        TenAm: [],
-        ElevenAm: [],
-        TwelvePm: [],
-        OnePm: [],
-        TwoPm: [],
-        ThreePm: [],
-        FourPm: [],
-        FivePm: []
+        0: ["Wake up"],
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+        6: [],
+        7: [],
+        8: []
       };
     }
-  }
+    for (i = 0; i < 9 ; i++) {
+      console.log(events[i]);
+      $("#hour-" + i).append(events[i]);
+    };
+    // // loop over object properties
+    // $.each(events, function(list, arr) {
+    //   // then loop over sub-array
+    //   arr.forEach(function(event) {
+    //  console.log(events[0]);
+    //     $("#hour-" + eventList).append(event[arr]);
+    //     createEvent(event.text, list);
+    //   });
+    // });
+  };
+
+  var createEvent = function(eventText, eventList) {
+    // create elements that make up a task item
+    // var eventP = $("<p>")
+    //   .text(eventText);
+    console.log(eventText);
+    // check due date
+    //auditTask(taskLi);
+  
+    // append to ul list on the page
+    $("#hour-" + eventList).append(eventP);
+    console.log(eventP);
+    console.log(eventList);
+  };
 
 loadEvents();
