@@ -1,5 +1,5 @@
 var today = moment()
-console.log(today.format("dddd, MMMM Do"));
+//console.log(today.format("dddd, MMMM Do"));
 
 $("#currentDay").append(today.format("dddd, MMMM Do YYYY"));
 
@@ -41,12 +41,10 @@ $(document).on("blur", ".form-control", function() {
     
     .attr("id")
     .replace("hour-", "");
-    console.log(status);
+    //console.log(status + 9);
 
   // update task in array
   events[status] = text;
-
-  localStorage.setItem("events", JSON.stringify(events));
 
   // recreate p element
   var eventP = $("<p>")
@@ -56,6 +54,9 @@ $(document).on("blur", ".form-control", function() {
 
   // replace textarea with new content
   $(this).replaceWith(eventP);
+  status = parseInt(status);
+  //console.log(status + 9);
+  checkEvent(status);
 });
 
 
@@ -66,21 +67,26 @@ $(document).on("blur", ".form-control", function() {
 
   // future time blocks are green
 
-// var checkEvent = function(hour) {
-  
-//     var currentHour = moment().format("H");
+  var checkEvent = function(hour) {
     
-  
-//     // remove any old classes from element
-//     $(eventEl).removeClass("list-group-item-warning list-group-item-danger");
-  
-//     // apply new class if task is near/over due date
-//     if (moment().isAfter(time)) {
-//       $(eventEl).addClass("list-group-item-danger");
-//     } else if (Math.abs(moment().diff(time, "days")) <= 2) {
-//       $(eventEl).addClass("list-group-item-warning");
-//     }
-//  };
+      var currentHour = moment().format("H");
+      
+    
+      // remove any old classes from element
+      $("#hour-" + hour).removeClass("list-group-item-warning list-group-item-danger");
+      console.log(hour);
+      console.log(currentHour);
+
+
+      // apply new class if task is near/over due date
+      if (hour + 9 < currentHour) {
+        $("#hour-" + hour).addClass("list-group-item-secondary");
+      } else if (hour + 9 == currentHour){
+        $("#hour-" + hour).addClass("list-group-item-danger");
+      } else if (hour + 9 > currentHour) {
+        $("#hour-" + hour).addClass("list-group-item-success");
+      }
+  };
 
   var loadEvents = function() {
     events = JSON.parse(localStorage.getItem("events"));
@@ -102,7 +108,7 @@ $(document).on("blur", ".form-control", function() {
     localStorage.setItem("events", JSON.stringify(events));
 
     for (i = 0; i < 9 ; i++) {
-
+      checkEvent(i)
       console.log(events[i]);
       $("#hour-" + i).append(events[i] + " ");
 
@@ -112,12 +118,8 @@ $(document).on("blur", ".form-control", function() {
   };
 
   var createEvent = function(eventText, eventList) {
-    // create elements that make up a task item
-    // var eventP = $("<p>")
-    //   .text(eventText);
+  
     console.log(eventText);
-    // check due date
-    //checkEvent();
   
     // append to the page
     $("#hour-" + eventList).append(eventP);
@@ -136,27 +138,28 @@ $(document).on("blur", ".form-control", function() {
 $(".saveBtn").click(function() {
   console.log("save clicked");
   
-  var index = 0
-    // $(this)
-    // .closest("p")
-    // .attr("id")
-    // .replace("hour-", "");
+  var index = 
+    $(this)
+    .attr("id")
+    .replace("save-", "");
     console.log(index);
     
   // get form values
   var eventText = document.getElementById("hour-" + index).textContent;
   console.log(eventText);
 
-  if (eventText ) {
-    createEvent(eventText, 0);
+  if (eventText) {
+    //createEvent(eventText, 0);
 
     // save in events array
     events[index].push({
-      text: taskText
+      text: eventText
     });
 
-    saveEvents();
+    saveEvents(eventText, index);
   }
+
+
 });
 
 
