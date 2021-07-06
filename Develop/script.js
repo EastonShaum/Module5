@@ -94,15 +94,15 @@ $(document).on("blur", ".form-control", function() {
     // if nothing in localStorage, create a new object to track all task status arrays
     if (!events) {
       events = {
-        0: ["Wake up, Eat breakfast"],
-        1: ["First appointment"],
+        0: [],
+        1: [],
         2: [],
-        3: ["Lunch"],
+        3: [],
         4: [],
-        5: ["Second appointment"],
+        5: [],
         6: [],
         7: [],
-        8: ["Go home"]
+        8: []
       };
     }
     localStorage.setItem("events", JSON.stringify(events));
